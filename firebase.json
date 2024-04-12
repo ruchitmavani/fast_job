@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "fastemployee",
     "source": ".",
     "ignore": [
       "firebase.json",

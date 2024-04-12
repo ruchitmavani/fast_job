@@ -30,6 +30,9 @@ class _UserDataScreenState extends State<UserDataScreen> {
       userData = uri.queryParameters;
       setState(() {});
 
+      if (kDebugMode) {
+        return;
+      }
       Future.delayed(
           const Duration(
             milliseconds: 200,
@@ -40,6 +43,8 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
   bool isLoad = false;
 
+  bool isLoadImage = false;
+
   void loading(bool value) {
     setState(() {
       isLoad = value;
@@ -47,8 +52,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
   }
 
   Future<void> heavyTask() async {
-      await compute(captureAndDownloadImage, key);
-
+    await compute(captureAndDownloadImage, key);
   }
 
   Future<void> captureAndDownloadImage(GlobalKey key) async {
@@ -124,23 +128,87 @@ class _UserDataScreenState extends State<UserDataScreen> {
                         Positioned(
                             top: 200,
                             child: Opacity(
-                                opacity: 0.15,
-                                child: Image.asset(
-                                    "assets/images/placement_logo.jpg"))),
+                              opacity: 0.15,
+                              child: Image.network(
+                                "https://fastemployee.web.app/assets/assets/images/placement_logo.jpg",
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const SizedBox();
+                                },
+                                loadingBuilder: (
+                                  BuildContext context,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress,
+                                ) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  } else {
+                                    return Center(
+                                      child: SizedBox(
+                                        height: 50,
+                                        width: 50,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.black,
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            )),
                         Column(
                           children: [
-
-                            Image.asset(
-                              'assets/images/logo.jpg',
+                            Image.network(
+                              "https://fastemployee.web.app/assets/assets/images/logo.jpg",
                               width: 649,
                               height: 185,
-
                               fit: BoxFit.fitWidth,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const SizedBox();
+                              },
+                              loadingBuilder: (
+                                BuildContext context,
+                                Widget child,
+                                ImageChunkEvent? loadingProgress,
+                              ) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                } else {
+                                  print(loadingProgress.expectedTotalBytes);
+                                  print(
+                                      "l-${loadingProgress.cumulativeBytesLoaded}");
+
+                                  return Center(
+                                    child: SizedBox(
+                                      height: 50,
+                                      width: 50,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
                             ),
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                  border: Border.all(),
+                                  border: Border.all(width: 2),
                                   color: const Color(0xffFDF0CF)),
                               child: const Column(
                                 children: [
@@ -149,7 +217,8 @@ class _UserDataScreenState extends State<UserDataScreen> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 20,
-                                        fontWeight: FontWeight.w600),
+                                        fontFamily: 'DMSans',
+                                        fontWeight: FontWeight.w800),
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -165,7 +234,8 @@ class _UserDataScreenState extends State<UserDataScreen> {
                                         '+91 90817 96019 (ONLY WHATSAPP)',
                                         style: TextStyle(
                                             fontSize: 20,
-                                            fontWeight: FontWeight.w600),
+                                            fontFamily: 'DMSans',
+                                            fontWeight: FontWeight.w800),
                                       )
                                     ],
                                   )
@@ -177,7 +247,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                               alignment: Alignment.center,
                               decoration: const BoxDecoration(
                                   border: Border.symmetric(
-                                    vertical: BorderSide(),
+                                    vertical: BorderSide(width: 2),
                                   ),
                                   color: Color(0xffB4E0FC)),
                               child: const DecoratedBox(
@@ -186,67 +256,70 @@ class _UserDataScreenState extends State<UserDataScreen> {
                                 child: Text(
                                   'JOB VACANCY',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 22),
+                                      fontSize: 22,
+                                      fontFamily: 'DMSans',
+                                      fontWeight: FontWeight.w800),
                                 ),
                               ),
                             ),
                             Table(
-                              border: TableBorder.all(),
+                              border: TableBorder.all(width: 2),
                               defaultVerticalAlignment:
                                   TableCellVerticalAlignment.middle,
-                              columnWidths: {0: FixedColumnWidth(420)},
+                              columnWidths: const {0: FixedColumnWidth(420)},
                               children: [
                                 TableRow(children: [
-                                  TableCell("DATE OF JOB VACANCY:"),
+                                  const TableCell(
+                                    "DATE OF JOB VACANCY:",
+                                  ),
                                   TableCell(userData?['date'] ?? "")
                                 ]),
                                 TableRow(children: [
-                                  TableCell('COMPANY NAME:'),
+                                  const TableCell('COMPANY NAME:'),
                                   TableCell(userData?['noc'] ?? "")
                                 ]),
                                 TableRow(children: [
-                                  TableCell('JOB LOCATION:'),
+                                  const TableCell('JOB LOCATION:'),
                                   TableCell(userData?['jobAdd'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('JOB POSITION:'),
+                                  const TableCell('JOB POSITION:'),
                                   TableCell(userData?['jobPos'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('NO. OF VACANCY:'),
+                                  const TableCell('NO. OF VACANCY:'),
                                   TableCell(userData?['nov'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('EDUCATION QUALIFICATION:'),
+                                  const TableCell('EDUCATION QUALIFICATION:'),
                                   TableCell(userData?['eq'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('EXPERIENCE:'),
+                                  const TableCell('EXPERIENCE:'),
                                   TableCell(userData?['je'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('REQUIRED SKILL:'),
+                                  const TableCell('REQUIRED SKILL:'),
                                   TableCell(userData?['keySkill'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('SALARY PER MONTH:'),
+                                  const TableCell('SALARY PER MONTH:'),
                                   TableCell(userData?['spm'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('CONTACT PERSON NAME:'),
+                                  const TableCell('CONTACT PERSON NAME:'),
                                   TableCell(userData?['cpname'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('CONTACT PERSON MOBILE NO:'),
+                                  const TableCell('CONTACT PERSON MOBILE NO:'),
                                   TableCell(userData?['cpmn'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('CONTACT PERSON EMAIL:'),
+                                  const TableCell('CONTACT PERSON EMAIL:'),
                                   TableCell(userData?['email'] ?? '')
                                 ]),
                                 TableRow(children: [
-                                  TableCell('TIMING OF CONTACT:'),
+                                  const TableCell('TIMING OF CONTACT:'),
                                   TableCell(userData?['ctfcon'] ?? '')
                                 ]),
                               ],
@@ -255,14 +328,19 @@ class _UserDataScreenState extends State<UserDataScreen> {
                               width: 1080,
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 30),
-                              decoration: BoxDecoration(
-                                  border: Border.all(),
-                                  color: const Color(0xffFDF0CF)),
-                              child: Text(
+                              decoration: const BoxDecoration(
+                                  border: Border(
+                                      left: BorderSide(width: 2),
+                                      bottom: BorderSide(width: 2),
+                                      right: BorderSide(width: 2)),
+                                  color: Color(0xffFDF0CF)),
+                              child: const Text(
                                 'PLEASE SHARE THIS JOB POST WITH YOUR FRIENDS AND FAMILY MEMBERS.\nSO THE RELEVANT PERSON OF THIS JOB POST CAN GET A JOB EASILY.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w600),
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    fontFamily: 'DMSans'),
                               ),
                             ),
                           ],
@@ -276,10 +354,23 @@ class _UserDataScreenState extends State<UserDataScreen> {
           ),
           if (!kDebugMode)
             ColoredBox(
-              color: Colors.black.withOpacity(0.5),
-              child: Center(
-                  child: ElevatedButton(
-                      onPressed: heavyTask, child: const Text('Save'))),
+              color: Colors.black,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Incase didn't download , press download button",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontFamily: 'DMSans')),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                      child: ElevatedButton(
+                          onPressed: heavyTask, child: const Text('Download'))),
+                ],
+              ),
             ),
         ],
       ),
@@ -298,10 +389,17 @@ class TableCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       child: Text(
-        text,
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+        text.trim(),
+        style: const TextStyle(
+            fontSize: 22,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1,
+            shadows: [
+              BoxShadow(color: Colors.black, spreadRadius: 0.1, blurRadius: 0.2)
+            ]),
       ),
     );
   }
