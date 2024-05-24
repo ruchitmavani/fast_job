@@ -78,7 +78,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
       html.AnchorElement anchor = html.AnchorElement(
         href: 'data:application/octet-stream;base64,$base64Image',
       )
-        ..download = userData?['noc'] ?? "image.png"
+        ..download = "${userData?['noc'] ?? "image"}.png"
         ..target = 'blank';
 
 // Trigger download
@@ -353,29 +353,29 @@ class _UserDataScreenState extends State<UserDataScreen> {
             ),
           ),
           if (!kDebugMode)
-          ColoredBox(
-            color: Colors.black,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Incase didn't download , press download button",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontFamily: 'DMSans',
+            ColoredBox(
+              color: Colors.black,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Incase didn't download , press download button",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontFamily: 'DMSans',
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Center(
-                    child: ElevatedButton(
-                        onPressed: heavyTask, child: const Text('Download'))),
-              ],
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                      child: ElevatedButton(
+                          onPressed: heavyTask, child: const Text('Download'))),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
